@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=>, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="kalkulator">
+        <div class="layar" id="layar">0</div>
+        
+        <div class="tombol-container">
+            <button class="tombol clear" onclick="clearAll()">C</button>
+            <button class="tombol clear" onclick="clearEntry()">CE</button>
+            <button class="tombol operasi" onclick="appendToDisplay('/')">÷</button>
+            <button class="tombol operasi" onclick="appendToDisplay('*')">×</button>
+
+            <button class="tombol angka" onclick="appendToDisplay('7')">7</button>
+            <button class="tombol angka" onclick="appendToDisplay('8')">8</button>
+            <button class="tombol angka" onclick="appendToDisplay('9')">9</button>
+            <button class="tombol operasi" onclick="appendToDisplay('-')">-</button>
+
+            <button class="tombol angka" onclick="appendToDisplay('4')">4</button>
+            <button class="tombol angka" onclick="appendToDisplay('5')">5</button>
+            <button class="tombol angka" onclick="appendToDisplay('6')">6</button>
+            <button class="tombol operasi" onclick="appendToDisplay('+')">+</button>
+
+            <button class="tombol angka" onclick="appendToDisplay('1')">1</button>
+            <button class="tombol angka" onclick="appendToDisplay('2')">2</button>
+            <button class="tombol angka" onclick="appendToDisplay('3')">3</button>
+            <button class="tombol sama-dengan" onclick="hitung()">=</button>
+
+            <button class="tombol nol angka" onclick="appendToDisplay('0')">0</button>
+            <button class="tombol angka" onclick="appendToDisplay('.')">.</button>
+        </div>
+    </div>
+
+
+    <script src="style.js"></script>
+</body>
+</html>
