@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Kas Kelas - 46 Siswa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            background: #f5f5f5;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1em;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            min-width: 120px;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            background: white;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        .tab-btn:hover {
+            background: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Dashboard */
+        .ringkasan {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .ringkasan-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .ringkasan-item h3 {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .ringkasan-item .nilai {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        /* Hari Pembayaran */
+        .hari-pembayaran {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .hari-card {
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .hari-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .hari-card .jumlah {
+            font-size: 1.5em;
+            color: #764ba2;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .hari-card .pembayar {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .hari-card .belum {
+            background: #ffebee;
+            color: #c62828;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        /* Daftar Siswa */
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        .siswa-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .siswa-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f9f9f9;
+            transition: all 0.3s;
+        }
+
+        .siswa-card:hover {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .siswa-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .siswa-card .no-urut {
+            font-size: 0.9em;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .pembayaran-status {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .status-check {
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid #ddd;
+        }
+
+        .status-check.senin { background: #e3f2fd; border-color: #2196F3; }
+        .status-check.rabu { background: #f3e5f5; border-color: #9c27b0; }
+        .status-check.jumat { background: #fff3e0; border-color: #ff9800; }
+
+        .status-check.checked {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+            font-weight: bold;
+        }
+
+        .status-check .nominal {
+            display: block;
+            font-size: 0.8em;
+            margin-top: 2px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .modal-header h2 {
+            color: #667eea;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-body .info {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .modal-body .info p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .modal-footer .btn {
+            min-width: 100px;
+        }
+
+        /* Laporan */
+        .laporan-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .laporan-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .laporan-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .laporan-table tbody tr:hover {
+            background: #f5f5f5;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #764ba2;
+        }
+
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #da190b;
+        }
+
+        @media print {
+            .nav-tabs, .search-box, .btn-group {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Sistem Kas Kelas 🤑💵</h1>
+            <p>46 Siswa - Pembayaran 3x Seminggu (Senin, Rabu, Jumat) Rp 5.000</p>
+        </div>
+
+        <!-- Modal Input Pembayaran -->
+        <div id="modalPembayaran" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Input Pembayaran Kas</h2>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="info">
+                        <p><strong>Nama Siswa:</strong> <span id="modalNamaSiswa">-</span></p>
+                        <p><strong>Hari:</strong> <span id="modalHari">-</span></p>
+                        <p><strong>Target Pembayaran:</strong> <span id="modalTarget">Rp 5.000</span></p>
+                    </div>
+                    <div class="form-group">
+                        <label>Nominal Pembayaran (Rp):</label>
+                        <input type="number" id="nominalInput" placeholder="Masukkan nominal pembayaran" min="0" max="5000">
+                    </div>
+                    <div id="infoKurang" style="background: #ffebee; padding: 10px; border-radius: 4px; color: #c62828; display: none;">
+                        Kurang: <strong id="nominalKurang">Rp 0</strong>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="simpanPembayaran()">Simpan</button>
+                    <button class="btn" style="background: #ddd; color: #333;" onclick="closeModal()">Batal</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('daftar-siswa')">👥 Daftar Siswa</button>
+            <button class="tab-btn" onclick="switchTab('pengeluaran')">💸 Pengeluaran</button>
+            <button class="tab-btn" onclick="switchTab('laporan')">📋 Laporan</button>
+            <button class="tab-btn" onclick="switchTab('pengaturan')">⚙️ Pengaturan</button>
+        </div>
+
+        <!-- TAB 1: DASHBOARD -->
+        <div id="dashboard" class="tab-content active">
+            <h2>Dashboard Kas Kelas</h2>
+            
+            <div class="ringkasan">
+                <div class="ringkasan-item">
+                    <h3>Total Pemasukan</h3>
+                    <div class="nilai" id="totalPemasukan">Rp 0</div>
+                </div>
+                <div class="ringkasan-item">
+                    <h3>Total Pengeluaran</h3>
+                    <div class="nilai" id="totalPengeluaran">Rp 0</div>
+                </div>
+                <div class="ringkasan-item">
+                    <h3>Saldo Akhir</h3>
+                    <div class="nilai" id="saldoAkhir">Rp 0</div>
+                </div>
+                <div class="ringkasan-item">
+                    <h3>Target Minggu</h3>
+                    <div class="nilai" id="targetKas">Rp 0</div>
+                </div>
+            </div>
+
+            <h3 style="margin: 30px 0 20px 0; color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Status Pembayaran Minggu Ini</h3>
+
+            <div class="hari-pembayaran">
+                <div class="hari-card">
+                    <h3>📅 Senin</h3>
+                    <div class="jumlah">Rp 5.000</div>
+                    <div class="pembayar">Sudah: <span id="senin-ok">0</span> siswa</div>
+                    <div class="belum">Belum: <span id="senin-belum">46</span> siswa</div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="resetHari('senin')">Reset</button>
+                </div>
+                <div class="hari-card">
+                    <h3>📅 Rabu</h3>
+                    <div class="jumlah">Rp 5.000</div>
+                    <div class="pembayar">Sudah: <span id="rabu-ok">0</span> siswa</div>
+                    <div class="belum">Belum: <span id="rabu-belum">46</span> siswa</div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="resetHari('rabu')">Reset</button>
+                </div>
+                <div class="hari-card">
+                    <h3>📅 Jumat</h3>
+                    <div class="jumlah">Rp 5.000</div>
+                    <div class="pembayar">Sudah: <span id="jumat-ok">0</span> siswa</div>
+                    <div class="belum">Belum: <span id="jumat-belum">46</span> siswa</div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="resetHari('jumat')">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: DAFTAR SISWA -->
+        <div id="daftar-siswa" class="tab-content">
+            <h2>Daftar Siswa & Status Pembayaran</h2>
+            
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Cari nama siswa..." onkeyup="cariSiswa()">
+            </div>
+
+            <div class="siswa-grid" id="siswaGrid">
+                <!-- Generated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- TAB 3: PENGELUARAN -->
+        <div id="pengeluaran" class="tab-content">
+            <h2>Pengeluaran Kas Kelas</h2>
+            
+            <div class="form-section" style="max-width: 600px; margin: 0 auto;">
+                <h3>Tambah Pengeluaran</h3>
+                
+                <div class="form-group">
+                    <label>Keterangan Pengeluaran:</label>
+                    <input type="text" id="keteranganPengeluaran" placeholder="contoh: Snack kelas, ATK, dll">
+                </div>
+
+                <div class="form-group">
+                    <label>Jumlah Pengeluaran (Rp):</label>
+                    <input type="number" id="jumlahPengeluaran" placeholder="Masukkan jumlah pengeluaran" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Tanggal Pengeluaran:</label>
+                    <input type="date" id="tanggalPengeluaran">
+                </div>
+
+                <button class="btn btn-danger" onclick="tambahPengeluaran()">Tambah Pengeluaran</button>
+            </div>
+
+            <h3 style="margin: 40px 0 20px 0; color: #f44336; border-bottom: 2px solid #f44336; padding-bottom: 10px;">Riwayat Pengeluaran</h3>
+            <div class="table-responsive">
+                <table class="laporan-table">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>Keterangan</th>
+                            <th>Jumlah</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelPengeluaran">
+                        <tr>
+                            <td colspan="5" style="text-align: center;">Belum ada pengeluaran</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: LAPORAN -->
+        <div id="laporan" class="tab-content">
+            <h2>Laporan Kas Kelas</h2>
+            
+            <h3 style="margin: 20px 0; color: #667eea;">Ringkasan Kas</h3>
+            <table class="laporan-table">
+                <thead>
+                    <tr>
+                        <th>Keterangan</th>
+                        <th>Jumlah</th>
+                        <th>Persentase</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Total Pemasukan</td>
+                        <td id="lap-pemasukan">Rp 0</td>
+                        <td id="lap-pemasukan-persen">0%</td>
+                    </tr>
+                    <tr>
+                        <td>Total Pengeluaran</td>
+                        <td id="lap-pengeluaran">Rp 0</td>
+                        <td>-</td>
+                    </tr>
+                    <tr style="background: #f5f5f5; font-weight: bold;">
+                        <td>Saldo Akhir</td>
+                        <td id="lap-saldo-akhir">Rp 0</td>
+                        <td id="lap-saldo-persen">0%</td>
+                    </tr>
+                    <tr>
+                        <td>Target Total</td>
+                        <td id="lap-target">Rp 0</td>
+                        <td>100%</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin: 30px 0 20px 0; color: #667eea;">Detail Per Hari</h3>
+            <table class="laporan-table">
+                <thead>
+                    <tr>
+                        <th>Hari</th>
+                        <th>Tanggal</th>
+                        <th>Target (Rp)</th>
+                        <th>Terkumpul (Rp)</th>
+                        <th>Pembayar</th>
+                        <th>Belum Bayar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Senin</strong></td>
+                        <td id="detail-senin-tanggal">-</td>
+                        <td id="detail-senin-target">Rp 230.000</td>
+                        <td id="detail-senin-terkumpul">Rp 0</td>
+                        <td id="detail-senin-ok">0</td>
+                        <td id="detail-senin-belum">46</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rabu</strong></td>
+                        <td id="detail-rabu-tanggal">-</td>
+                        <td id="detail-rabu-target">Rp 230.000</td>
+                        <td id="detail-rabu-terkumpul">Rp 0</td>
+                        <td id="detail-rabu-ok">0</td>
+                        <td id="detail-rabu-belum">46</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jumat</strong></td>
+                        <td id="detail-jumat-tanggal">-</td>
+                        <td id="detail-jumat-target">Rp 230.000</td>
+                        <td id="detail-jumat-terkumpul">Rp 0</td>
+                        <td id="detail-jumat-ok">0</td>
+                        <td id="detail-jumat-belum">46</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin: 30px 0 20px 0; color: #f44336;">Riwayat Pengeluaran</h3>
+            <table class="laporan-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Keterangan</th>
+                        <th>Jumlah</th>
+                    </tr>
+                </thead>
+                <tbody id="laporanPengeluaran">
+                    <tr>
+                        <td colspan="4" style="text-align: center;">Belum ada pengeluaran</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="printLaporan()">🖨️ Cetak Laporan</button>
+                <button class="btn btn-success" onclick="exportCSV()">📥 Export CSV</button>
+                <button class="btn btn-danger" onclick="resetSemua()">🔄 Reset Semua Data</button>
+            </div>
+        </div>
+
+        <!-- TAB 4: PENGATURAN -->
+        <div id="pengaturan" class="tab-content">
+            <h2>Pengaturan Sistem</h2>
+            
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px; color: #667eea;">Informasi Sistem</h3>
+                <p><strong>Total Siswa:</strong> 46 orang</p>
+                <p><strong>Hari Pembayaran:</strong> Senin, Rabu, Jumat</p>
+                <p><strong>Jumlah Pembayaran/Hari:</strong> Rp 5.000</p>
+                <p><strong>Target/Minggu:</strong> Rp 690.000</p>
+                <p><strong>Target/Bulan:</strong> Rp 2.760.000</p>
+                <p><strong>Total Pengeluaran Saat Ini:</strong> <span id="infoPengeluaran">Rp 0</span></p>
+            </div>
+
+            <h3 style="margin-bottom: 15px; color: #667eea;">Aksi Sistem</h3>
+            <div class="btn-group">
+                <button class="btn btn-danger" onclick="hapusSemuaData()" style="width: 100%;">🗑️ Hapus Semua Data (Jangan klik sembarangan!)</button>
+            </div>
+
+            <div style="background: #fff3cd; padding: 15px; border-radius: 4px; margin-top: 20px; border-left: 4px solid #ffc107;">
+                <strong>⚠️ PERINGATAN:</strong> Data disimpan secara lokal di browser. Jika Anda membersihkan cache browser, semua data akan hilang. Pastikan untuk export data secara berkala!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data struktur siswa
+        const TOTAL_SISWA = 46;
+        const JUMLAH_BAYAR = 5000;
+        const HARI_BAYAR = ['senin', 'rabu', 'jumat'];
+
+        // Inisialisasi data
+        let siswa = [];
+        let data = {
+            senin: {},
+            rabu: {},
+            jumat: {}
+        };
+        let pengeluaran = [];
+
+        // Tanggal hari ini
+        let tanggalHari = {
+            senin: null,
+            rabu: null,
+            jumat: null
+        };
+
+        // Modal state
+        let modalState = {
+            siswaId: null,
+            hari: null
+        };
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', function() {
+            initTanggalHari();
+            initSiswa();
+            loadData();
+            updateDashboard();
+            renderSiswaGrid();
+            renderPengeluaran();
+        });
+
+        // Buat list siswa
+        function initSiswa() {
+            for(let i = 1; i <= TOTAL_SISWA; i++) {
+                siswa.push({
+                    id: i,
+                    nama: `Siswa ${i}`
+                });
+            }
+        }
+
+        // Hitung tanggal hari Senin, Rabu, Jumat minggu ini
+        function initTanggalHari() {
+            const today = new Date();
+            const dayOfWeek = today.getDay(); // 0 = Minggu, 1 = Senin, dst
+            
+            // Cari tanggal Senin minggu ini
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - dayOfWeek + 1);
+            
+            // Set tanggal untuk setiap hari
+            tanggalHari.senin = new Date(monday);
+            tanggalHari.rabu = new Date(monday);
+            tanggalHari.rabu.setDate(monday.getDate() + 2);
+            tanggalHari.jumat = new Date(monday);
+            tanggalHari.jumat.setDate(monday.getDate() + 4);
+            
+            // Set tanggal default untuk input pengeluaran
+            document.getElementById('tanggalPengeluaran').value = today.toISOString().split('T')[0];
+        }
+
+        // Switch tab
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if(tabName === 'laporan') {
+                updateLaporan();
+            } else if(tabName === 'pengaturan') {
+                // Update info pengeluaran di pengaturan
+                let totalPengeluaran = 0;
+                pengeluaran.forEach(p => totalPengeluaran += p.jumlah);
+                document.getElementById('infoPengeluaran').textContent = formatRupiah(totalPengeluaran);
+            }
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            let totalPemasukan = 0;
+            let totalPengeluaran = 0;
+            let totalMasuk = {};
+            
+            HARI_BAYAR.forEach(hari => {
+                totalMasuk[hari] = {
+                    nominal: 0,
+                    count: 0,
+                    siswaIds: []
+                };
+                
+                Object.entries(data[hari]).forEach(([siswaId, pembayaran]) => {
+                    if(pembayaran && pembayaran.nominal) {
+                        totalMasuk[hari].nominal += pembayaran.nominal;
+                        totalMasuk[hari].count++;
+                        totalMasuk[hari].siswaIds.push(parseInt(siswaId));
+                    }
+                });
+                
+                totalPemasukan += totalMasuk[hari].nominal;
+                
+                document.getElementById(hari + '-ok').textContent = totalMasuk[hari].count;
+                document.getElementById(hari + '-belum').textContent = TOTAL_SISWA - totalMasuk[hari].count;
+            });
+            
+            // Hitung total pengeluaran
+            pengeluaran.forEach(p => {
+                totalPengeluaran += p.jumlah;
+            });
+            
+            const saldoAkhir = totalPemasukan - totalPengeluaran;
+            
+            // Update dashboard
+            document.getElementById('totalPemasukan').textContent = formatRupiah(totalPemasukan);
+            document.getElementById('totalPengeluaran').textContent = formatRupiah(totalPengeluaran);
+            document.getElementById('saldoAkhir').textContent = formatRupiah(saldoAkhir);
+            
+            // Target minggu (total semua hari)
+            let targetHari = TOTAL_SISWA * JUMLAH_BAYAR * HARI_BAYAR.length;
+            document.getElementById('targetKas').textContent = formatRupiah(targetHari);
+        }
+
+        // Render siswa grid
+        function renderSiswaGrid() {
+            const grid = document.getElementById('siswaGrid');
+            grid.innerHTML = '';
+            
+            siswa.forEach(s => {
+                const card = document.createElement('div');
+                card.className = 'siswa-card';
+                
+                let statusHtml = '<div class="pembayaran-status">';
+                HARI_BAYAR.forEach(hari => {
+                    const pembayaran = data[hari][s.id];
+                    const nominal = pembayaran && pembayaran.nominal ? pembayaran.nominal : 0;
+                    const sudahBayar = nominal > 0;
+                    const checked = sudahBayar ? 'checked' : '';
+                    const nomorHari = hari.substring(0, 3).toUpperCase();
+                    const displayNominal = nominal > 0 ? nominal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '0';
+                    
+                    statusHtml += `
+                        <div class="status-check ${hari} ${checked}" 
+                             onclick="openModal(${s.id}, '${hari}')">
+                            <span>${nomorHari}</span>
+                            <span class="nominal">Rp ${displayNominal}</span>
+                        </div>
+                    `;
+                });
+                statusHtml += '</div>';
+                
+                card.innerHTML = `
+                    <div class="no-urut">#${s.id}</div>
+                    <h3>${s.nama}</h3>
+                    ${statusHtml}
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Open modal
+        function openModal(siswaId, hari) {
+            modalState.siswaId = siswaId;
+            modalState.hari = hari;
+            
+            const siswaData = siswa.find(s => s.id === siswaId);
+            const pembayaran = data[hari][siswaId];
+            const nominal = pembayaran && pembayaran.nominal ? pembayaran.nominal : 0;
+            
+            document.getElementById('modalNamaSiswa').textContent = siswaData.nama;
+            document.getElementById('modalHari').textContent = hari.charAt(0).toUpperCase() + hari.slice(1);
+            document.getElementById('nominalInput').value = nominal;
+            document.getElementById('nominalInput').focus();
+            
+            updateKurangBayar();
+            document.getElementById('modalPembayaran').classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modalPembayaran').classList.remove('show');
+            document.getElementById('nominalInput').value = '';
+            modalState.siswaId = null;
+            modalState.hari = null;
+        }
+
+        // Update kurang bayar realtime
+        document.addEventListener('DOMContentLoaded', function() {
+            const nominalInput = document.getElementById('nominalInput');
+            if(nominalInput) {
+                nominalInput.addEventListener('input', updateKurangBayar);
+            }
+        });
+
+        function updateKurangBayar() {
+            const nominalInput = document.getElementById('nominalInput');
+            const nominal = parseInt(nominalInput.value) || 0;
+            const kurang = JUMLAH_BAYAR - nominal;
+            
+            const infoKurang = document.getElementById('infoKurang');
+            const nominalKurang = document.getElementById('nominalKurang');
+            
+            if(nominal > 0 && nominal < JUMLAH_BAYAR) {
+                infoKurang.style.display = 'block';
+                nominalKurang.textContent = 'Rp ' + kurang.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+            } else {
+                infoKurang.style.display = 'none';
+            }
+        }
+
+        // Simpan pembayaran
+        function simpanPembayaran() {
+            const nominalInput = document.getElementById('nominalInput');
+            const nominal = parseInt(nominalInput.value) || 0;
+            
+            if(nominal < 0 || nominal > JUMLAH_BAYAR) {
+                alert('Nominal harus antara 0 - ' + JUMLAH_BAYAR);
+                return;
+            }
+            
+            if(nominal === 0) {
+                // Hapus pembayaran jika nominal 0
+                if(data[modalState.hari][modalState.siswaId]) {
+                    delete data[modalState.hari][modalState.siswaId];
+                }
+            } else {
+                // Simpan pembayaran
+                if(!data[modalState.hari][modalState.siswaId]) {
+                    data[modalState.hari][modalState.siswaId] = {};
+                }
+                data[modalState.hari][modalState.siswaId].nominal = nominal;
+            }
+            
+            saveData();
+            updateDashboard();
+            renderSiswaGrid();
+            closeModal();
+        }
+
+        // Tambah pengeluaran
+        function tambahPengeluaran() {
+            const keterangan = document.getElementById('keteranganPengeluaran').value.trim();
+            const jumlah = parseInt(document.getElementById('jumlahPengeluaran').value);
+            const tanggal = document.getElementById('tanggalPengeluaran').value;
+            
+            // Validasi input
+            if(!keterangan || !jumlah || !tanggal) {
+                alert('Silakan isi semua field!');
+                return;
+            }
+            
+            if(jumlah <= 0) {
+                alert('Jumlah harus lebih dari 0!');
+                return;
+            }
+            
+            // Tambah pengeluaran ke array
+            const pengeluaranBaru = {
+                id: Date.now(),
+                tanggal: tanggal,
+                keterangan: keterangan,
+                jumlah: jumlah
+            };
+            
+            pengeluaran.push(pengeluaranBaru);
+            
+            // Simpan ke localStorage
+            saveData();
+            
+            // Reset form
+            document.getElementById('keteranganPengeluaran').value = '';
+            document.getElementById('jumlahPengeluaran').value = '';
+            
+            // Tampilkan pesan sukses
+            alert('Pengeluaran berhasil ditambahkan!');
+            
+            // Update dashboard dan render
+            updateDashboard();
+            renderPengeluaran();
+        }
+
+        // Render tabel pengeluaran
+        function renderPengeluaran() {
+            const tbody = document.getElementById('tabelPengeluaran');
+            
+            if(pengeluaran.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada pengeluaran</td></tr>';
+                return;
+            }
+            
+            // Urutkan berdasarkan tanggal (terbaru dulu)
+            const sorted = [...pengeluaran].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+            
+            let html = '';
+            sorted.forEach((p, index) => {
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${formatTanggalLengkap(p.tanggal)}</td>
+                        <td>${p.keterangan}</td>
+                        <td style="color: #f44336; font-weight: bold;">Rp ${formatNumber(p.jumlah)}</td>
+                        <td><button class="btn-delete" onclick="hapusPengeluaran(${p.id})">Hapus</button></td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        // Hapus pengeluaran
+        function hapusPengeluaran(id) {
+            if(confirm('Yakin ingin menghapus pengeluaran ini?')) {
+                pengeluaran = pengeluaran.filter(p => p.id !== id);
+                saveData();
+                updateDashboard();
+                renderPengeluaran();
+                alert('Pengeluaran berhasil dihapus!');
+            }
+        }
+
+        // Reset hari
+        function resetHari(hari) {
+            if(confirm(`Yakin reset data ${hari}?`)) {
+                data[hari] = {};
+                saveData();
+                updateDashboard();
+                renderSiswaGrid();
+            }
+        }
+
+        // Update laporan
+        function updateLaporan() {
+            let totalPemasukan = 0;
+            let totalPengeluaran = 0;
+            let totalTarget = TOTAL_SISWA * JUMLAH_BAYAR * HARI_BAYAR.length;
+            
+            HARI_BAYAR.forEach(hari => {
+                let nominalHariMasuk = 0;
+                let count = 0;
+                
+                Object.entries(data[hari]).forEach(([siswaId, pembayaran]) => {
+                    if(pembayaran && pembayaran.nominal) {
+                        nominalHariMasuk += pembayaran.nominal;
+                        count++;
+                    }
+                });
+                
+                totalPemasukan += nominalHariMasuk;
+                
+                document.getElementById(`detail-${hari}-tanggal`).textContent = formatTanggalLengkap(tanggalHari[hari]);
+                document.getElementById(`detail-${hari}-terkumpul`).textContent = formatRupiah(nominalHariMasuk);
+                document.getElementById(`detail-${hari}-ok`).textContent = count;
+                document.getElementById(`detail-${hari}-belum`).textContent = TOTAL_SISWA - count;
+            });
+            
+            // Hitung total pengeluaran
+            pengeluaran.forEach(p => {
+                totalPengeluaran += p.jumlah;
+            });
+            
+            const saldoAkhir = totalPemasukan - totalPengeluaran;
+            const persenPemasukan = Math.round((totalPemasukan / totalTarget) * 100);
+            const persenSaldo = Math.round((saldoAkhir / totalTarget) * 100);
+            
+            // Update ringkasan
+            document.getElementById('lap-pemasukan').textContent = formatRupiah(totalPemasukan);
+            document.getElementById('lap-pemasukan-persen').textContent = persenPemasukan + '%';
+            document.getElementById('lap-pengeluaran').textContent = formatRupiah(totalPengeluaran);
+            document.getElementById('lap-saldo-akhir').textContent = formatRupiah(saldoAkhir);
+            document.getElementById('lap-saldo-persen').textContent = persenSaldo + '%';
+            document.getElementById('lap-target').textContent = formatRupiah(totalTarget);
+            
+            // Update tabel pengeluaran di laporan
+            updateLaporanPengeluaran();
+        }
+
+        // Update tabel pengeluaran di laporan
+        function updateLaporanPengeluaran() {
+            const tbody = document.getElementById('laporanPengeluaran');
+            
+            if(pengeluaran.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Belum ada pengeluaran</td></tr>';
+                return;
+            }
+            
+            // Urutkan berdasarkan tanggal (terbaru dulu)
+            const sorted = [...pengeluaran].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+            
+            let html = '';
+            sorted.forEach((p, index) => {
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${formatTanggalLengkap(p.tanggal)}</td>
+                        <td>${p.keterangan}</td>
+                        <td style="color: #f44336; font-weight: bold;">Rp ${formatNumber(p.jumlah)}</td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        // Format Rupiah
+        function formatRupiah(angka) {
+            return 'Rp ' + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Format tanggal lengkap (Senin 13 4 2026)
+        function formatTanggalLengkap(dateString) {
+            const date = new Date(dateString);
+            const hari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const namaHari = hari[date.getDay()];
+            const tanggal = date.getDate();
+            const bulan = date.getMonth() + 1;
+            const tahun = date.getFullYear();
+            
+            return `${namaHari} ${tanggal} ${bulan} ${tahun}`;
+        }
+
+        // Save data
+        function saveData() {
+            const allData = {
+                pembayaran: data,
+                pengeluaran: pengeluaran
+            };
+            localStorage.setItem('kasKelasData', JSON.stringify(allData));
+        }
+
+        // Load data
+        function loadData() {
+            const saved = localStorage.getItem('kasKelasData');
+            if(saved) {
+                const allData = JSON.parse(saved);
+                data = allData.pembayaran || { senin: {}, rabu: {}, jumat: {} };
+                pengeluaran = allData.pengeluaran || [];
+            }
+        }
+
+        // Print
+        function printLaporan() {
+            window.print();
+        }
+
+        // Export CSV
+        function exportCSV() {
+            let csv = 'Laporan Kas Kelas\n';
+            csv += `Tanggal: ${new Date().toLocaleDateString('id-ID')}\n\n`;
+            csv += 'No,Nama,Senin,Rabu,Jumat,Total Pembayaran,Kurang Bayar\n';
+            
+            siswa.forEach(s => {
+                let totalBayar = 0;
+                const senin = data.senin[s.id] && data.senin[s.id].nominal ? data.senin[s.id].nominal : 0;
+                const rabu = data.rabu[s.id] && data.rabu[s.id].nominal ? data.rabu[s.id].nominal : 0;
+                const jumat = data.jumat[s.id] && data.jumat[s.id].nominal ? data.jumat[s.id].nominal : 0;
+                
+                totalBayar = senin + rabu + jumat;
+                const targetTotal = JUMLAH_BAYAR * 3;
+                const kurangBayar = targetTotal - totalBayar;
+                
+                csv += `${s.id},${s.nama},${senin},${rabu},${jumat},${totalBayar},${kurangBayar}\n`;
+            });
+            
+            // Tambah ringkasan pemasukan
+            let totalPemasukan = 0;
+            let totalPengeluaran = 0;
+            HARI_BAYAR.forEach(hari => {
+                Object.entries(data[hari]).forEach(([siswaId, pembayaran]) => {
+                    if(pembayaran && pembayaran.nominal) {
+                        totalPemasukan += pembayaran.nominal;
+                    }
+                });
+            });
+            pengeluaran.forEach(p => totalPengeluaran += p.jumlah);
+            
+            csv += `\nRINGKASAN\n`;
+            csv += `Total Pemasukan,${totalPemasukan}\n`;
+            csv += `Total Pengeluaran,${totalPengeluaran}\n`;
+            csv += `Saldo Akhir,${totalPemasukan - totalPengeluaran}\n`;
+            
+            // Tambah detail pengeluaran
+            if(pengeluaran.length > 0) {
+                csv += `\nPENGELUARAN\n`;
+                csv += `Tanggal,Keterangan,Jumlah\n`;
+                pengeluaran.forEach(p => {
+                    csv += `${p.tanggal},${p.keterangan},${p.jumlah}\n`;
+                });
+            }
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Laporan_Kas_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Reset semua
+        function resetSemua() {
+            if(confirm('Yakin reset SEMUA data pembayaran minggu ini?')) {
+                data = { senin: {}, rabu: {}, jumat: {} };
+                pengeluaran = [];
+                saveData();
+                updateDashboard();
+                renderSiswaGrid();
+                renderPengeluaran();
+            }
+        }
+
+        // Hapus semua data
+        function hapusSemuaData() {
+            if(confirm('PERHATIAN! Ini akan menghapus SEMUA data. Lanjutkan?')) {
+                if(confirm('Benar-benar yakin? Tidak bisa diundo!')) {
+                    localStorage.removeItem('kasKelasData');
+                    data = { senin: {}, rabu: {}, jumat: {} };
+                    pengeluaran = [];
+                    updateDashboard();
+                    renderSiswaGrid();
+                    renderPengeluaran();
+                    alert('Semua data telah dihapus!');
+                }
+            }
+        }
+    </script>
+</body>
+</html> 
